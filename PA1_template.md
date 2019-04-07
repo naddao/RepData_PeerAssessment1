@@ -20,9 +20,29 @@ The dataset is stored in a comma-seperate-value(csv) file and there are a total 
 
 ## Section 1: Loading and preprocessing the data
 Load data source from file and prepare data to be in format that ready for analysis.
-```{r, echo=TRUE, results='hide'}
-library(dplyr)
 
+```r
+library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 # function to extract number of which day of the week
 get_hour <- function(interval){
     hour <- sprintf("%04d", interval)
@@ -66,17 +86,30 @@ steps_rng <- range(0, max(filtered_data$steps))
 ```
 
 ###1.1 Example of dataset
-```{r, echo=FALSE, results=TRUE}
-print(head(data, 10))
+
+```
+##    steps       date interval
+## 1     NA 2012-10-01        0
+## 2     NA 2012-10-01        5
+## 3     NA 2012-10-01       10
+## 4     NA 2012-10-01       15
+## 5     NA 2012-10-01       20
+## 6     NA 2012-10-01       25
+## 7     NA 2012-10-01       30
+## 8     NA 2012-10-01       35
+## 9     NA 2012-10-01       40
+## 10    NA 2012-10-01       45
 ```
 ###1.2 Percentage of steps data which NA 
-```{r, echo=FALSE, results=TRUE}
-print( mean(is.na(data$steps))*100)
+
+```
+## [1] 13.11475
 ```
 
 ## Section 2: What is mean total number of steps taken per day?
 Summary data to get the total steps taken per day. Plot histgram of total steps taken each day and calculate mean/median of total number of steps taken per day.
-```{r, echo=TRUE, fig.height=6}
+
+```r
 # summary steps data by doing summation of total of steps taking each day for all day in datasets
 summary_each_day_na <- filtered_data  %>% group_by(date) %>% summarise( total=sum(steps))
 
@@ -114,10 +147,13 @@ with(summary_each_day_na, {
 })
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
 
 ## Section 3: What is the average daily activity pattern?
 Summary data for average steps taken in each 5-minute interval of the day across all days in the dataset and calculate which interval contains the maximum number of steps.
-```{r, echo=TRUE}
+
+```r
 # summary steps data by doing mean of steps taken in each 5-minute interval across all day
 summary_each_interval <- filtered_data  %>% group_by(interval) %>% summarise( average=mean(steps))
 
@@ -145,15 +181,17 @@ with(summary_each_interval, {
 })
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
 ## Section 4: Imputing missing values  
 In dataset, there are a number of days/intervals where there are missing value(coded as NA). There presence of missing days may introduce bias into some calculations or summaries of the data.  
 
 Calculate the total number of missing values in datasets. Devise strategy for filling in all of the missing values in the dataset and make a new dataset which is equal to the original but with the missing data filled in. Make a histogram of total number of steps taken each and calculate the mean/median total number of steps taken per day.  
 
 ##### Total number of missing value in dataset
-```{r, echo=FALSE, results=TRUE}
-na_amount <- length(subset(data, is.na(data$steps))$steps)
-print( paste( na_amount, " of ", length(data$steps) ) ) 
+
+```
+## [1] "2304  of  17568"
 ```
 
 * Do these values differ from the estimates from the first part of the assignment?    
@@ -161,7 +199,8 @@ print( paste( na_amount, " of ", length(data$steps) ) )
 
 ### 4.1 analyze whether average steps of each 5-minutes interval by each date can be used as impute value  
 Show informations which are sampled from 3 selected days with average steps(calculated data) from each 5-minutes interval of that day and steps(raw data) from each 5-minutes interval of a day  
-```{r, echo=TRUE, fig.height=10, fig.width=10}
+
+```r
 # summary steps data by doing mean of steps taken in each 5-minute interval of each day
 summary_each_day <- filtered_data  %>% group_by(date) %>% summarise( average=mean(steps))
 unique_date <- unique(filtered_data$date)
@@ -234,9 +273,12 @@ with(example_day3,{
 })
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
 ### 4.2 analyze whether average steps on each 5-minutes interval across all day can be used as impute data for missing value
 Show information of a single 5-minutes interval with steps(raw data) collect in each day and steps(average) calculated across all days   
-```{r, echo=TRUE, fig.height=10}
+
+```r
 # summary steps data by doing mean of steps taken in each 5-minute interval across all day
 summary_interval_data <- filtered_data  %>% group_by(interval) %>% summarise( average=mean(steps), median=median(steps), total=sum(steps))
 unique_date <- unique(filtered_data$date)
@@ -300,6 +342,8 @@ with(example_day3,{
 })
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+
 ### 4.3 impute missing value using calcuated value of mean steps of each 5-minutes interval across all days
 From 4.1, 4.2, there are some informations we can study from the graph 
   
@@ -309,7 +353,8 @@ From 4.1, 4.2, there are some informations we can study from the graph
 In this work, I use average steps taken in each 5-minutes interval across all days to imputed NA data available in datasets.  
     
 
-```{r, echo=TRUE, fig.height=10}
+
+```r
 # using impute value from each 5-minutes interval across all days to impute NA value in dataset
 new_data <- merge(data, summary_each_interval, by = "interval", all.x = TRUE)
 new_data$steps <- ifelse(is.na(new_data$steps), new_data$average, new_data$steps)
@@ -379,14 +424,16 @@ with(summary_each_day_impute, {
     text(date[10], mean_val-2200, cex=0.9, pos=1, col="red", labels= paste("median = ", format_number(median_val) ))
     legend("topright", lty=c(2, 3), col=c("orange", "red"), legend=c("mean", "median"))
 })
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 
 ## Section 5: Are there differences in activity patterns between weekdays and weekends?  
 From new dataset(imputed NA), seperate data into 2 datasets: weekday, weekend. Summary the each dataset for the average steps taken in each 5-minutes interval across all days. Make a plot show different of average steps taken in each 5-minutes interval between weekday and weekend.  
 
-```{r, echo=TRUE, fig.height=6}
+
+```r
 # generate factor: weekday/weekend
 new_data$day_type <- ifelse( ( as.POSIXlt(new_data$date)$wday %in% c(6, 0)), 'weekend', 'weekday' )
 new_data$day_type <- factor(new_data$day_type, levels=c("weekday", "weekend"))
@@ -416,3 +463,5 @@ with(summary_each_interval_weekend, {
     points(interval, average, pch=1, cex=0.7, col="green" )
 })
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
