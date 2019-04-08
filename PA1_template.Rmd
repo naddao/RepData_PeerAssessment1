@@ -353,6 +353,7 @@ with(summary_each_day_na, {
 
 # calculate mean/median of total steps taken each day from dataset which impute NA value with mean steps taken in each 5-minutes interval across all day
 mean_val = mean(summary_each_day_impute$total)
+median_val = median(summary_each_day_impute$total)
 
 # generate sequence of total steps using for ploting graph x or y axis
 seq_total_steps <- seq(0, max(summary_each_day_impute$total), by=5000)
