@@ -231,11 +231,15 @@ format_date_string &lt;- function(date){
 }
 
 # specify data source filename
-prefix_path &lt;- &quot;../repdata_data_activity/&quot;
+source_file &lt;- &quot;activity.zip&quot;
+dataset_path &lt;- &quot;datasets/&quot;
 filename &lt;- &quot;activity.csv&quot;
 
+# unzip downloaded file
+unzip(source_file, exdir=dataset_path, overwrite=TRUE)
+
 # load csv data
-file_path &lt;- paste(prefix_path, filename, sep=&quot;&quot;)
+file_path &lt;- paste(dataset_path, filename, sep=&quot;&quot;)
 data &lt;- read.csv(file_path, header=TRUE, sep=&quot;,&quot;)
 
 # convert date string to date object

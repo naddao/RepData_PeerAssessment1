@@ -45,11 +45,15 @@ format_date_string <- function(date){
 }
 
 # specify data source filename
-prefix_path <- "../repdata_data_activity/"
+source_file <- "activity.zip"
+dataset_path <- "datasets/"
 filename <- "activity.csv"
 
+# unzip downloaded file
+unzip(source_file, exdir=dataset_path, overwrite=TRUE)
+
 # load csv data
-file_path <- paste(prefix_path, filename, sep="")
+file_path <- paste(dataset_path, filename, sep="")
 data <- read.csv(file_path, header=TRUE, sep=",")
 
 # convert date string to date object
